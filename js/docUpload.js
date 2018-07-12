@@ -1,4 +1,4 @@
-import $ from '../lib/jquery-3.3.1.min.js'
+import $ from '../lib/lib-js/jquery-3.3.1.min.js'
 
 let filePath = "temp"; // 这里的话需要分单个文件或者是所有文件的文件夹，到时页面会提供批量和单个
 let URL = `http://localhost:8080/PerceptronLexicalAnalyzer/process?method=seg&patch=${filePath}`;

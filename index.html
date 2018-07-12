@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body>
-<h1 style="text-align: center">key-word Extract Tool</h1>
-<h1 style="text-align: center">This is git-master</h1>
+<div id="container">
+    <div id="upload_btn">选择文件夹
+        <form name="myForm" action="demo" method="post">
+            <input  id="upload_input" type="file" webkitdirectory directory>
+            <input  id="upload_submit" type="submit" name="submit" value="Commit">
+        </form>
+    </div>
+</div>
+<script>
+    let upload_btn = document.getElementById("upload_btn");
+    let upload_input = document.getElementById("upload_input");
+    let upload_submit = document.getElementById("upload_submit");
+    upload_input.addEventListener("change",function () {
+        upload_submit.click();
+        console.log("this is a desk");
+    })
+    upload_btn.addEventListener("click",function () {
+        upload_input.click(); // 手动触发点击事
+    })
 
+</script>
 </body>
 
 </html>

@@ -1,0 +1,16 @@
+#grid_container{
+    display: block;
+    width: 700px;
+    height: 1000px;
+    margin: 100px auto;
+}
+/*控制文档名称的样式*/
+.doc_name:hover,.doc_name:active{
+    color: red;
+}
+#pdfDoc_container{
+    display: none;
+    width: 800px;
+    height: 1000px;
+    margin: 50px auto;
+}
