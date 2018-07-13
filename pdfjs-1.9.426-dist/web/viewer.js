@@ -2220,7 +2220,7 @@ function wordAndParagraphLocation(contentOfLocation) {
       query:contentOfLocation,
       phraseSearch:true,
       caseSensitive:false,
-      highlightAll:false, // 如果是为了定位就改为false
+      highlightAll:true, // 如果是为了定位就改为false
   }
     PDFViewerApplication.findController.executeCommand('find' + evt.type, {
         query: evt.query,

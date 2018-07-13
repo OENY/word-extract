@@ -8,6 +8,7 @@
     <link href="lib/lib-css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/lib-css/htmleaf-demo.css">
     <link rel="stylesheet" href="lib/lib-css/samples-styles.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css"><!--图标库-->
 
     <!--自定义-->
     <link rel="stylesheet" href="css/main.css">
@@ -16,7 +17,7 @@
 <body>
 <div id="grid_container">
     <div class="input-group">
-        <div class="input-group-addon">过滤条件</div>
+        <div class="input-group-addon" style="background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);color: white">过滤条件</div>
         <input class="form-control" type="search" id="input-filter" size="15" placeholder="输入过滤条件"></input>
     </div>
     <br>
@@ -77,12 +78,32 @@
         </tbody>
     </table>-->
 </div>
+<div id="pdf_view_container">
+    <div id="view_top_container">
+        <span>Semanteme Extract Tools</span>
+        <!--这里用于放一些标题和名称信息-->
+    </div>
+    <div id="view_main_container">
+        <div id="pdfDoc_container">
+            <!--<iframe src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url=http://localhost:8080/Convert&locationContent=综上所述，犯罪嫌疑人李毅、张昌以非法占有他人财物为目的，秘密窃取他人财物，其行为已触犯《中华人民共和国刑法》第264条的规定涉嫌盗窃罪。依照《中华人民共和国刑事诉讼法》第七十九条，八十五条之规定，特提请批准逮捕" style="width:100%;height: 100%;"></iframe>-->
+        </div>
+        <div id="right_container">
+            <div id="detail_keywords">
+                <div id="keywords_title"></div>
+            </div>
+            <div id="related_document">
+                <div id="related_title">相关文档推荐</div>
+                <div id="related_document_list"></div>
+            </div>
+        </div>
+    </div>
 
-<div id="pdfDoc_container">
-<!--
-    <iframe src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url=http://localhost:8080/Convert&locationContent=综上所述，犯罪嫌疑人李毅、张昌以非法占有他人财物为目的，秘密窃取他人财物，其行为已触犯《中华人民共和国刑法》第264条的规定涉嫌盗窃罪。依照《中华人民共和国刑事诉讼法》第七十九条，八十五条之规定，特提请批准逮捕" style="width:100%;height: 100%;"></iframe>
--->
+    <div id="view_tool_bar">
+        <li id="backHome">返回首页</li>
+        <!--<li>上传文档</li>-->
+    </div>
 </div>
+
 
 
 <script>
