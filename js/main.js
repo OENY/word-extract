@@ -128,6 +128,28 @@ $(function () {
                         let close_buttons =document.getElementsByClassName("close_keyWord_button");
                         for(let i = 0;i<close_buttons.length;i++){
                             close_buttons[i].addEventListener("click",function () {
+                                let current_button_div = this.parentNode;// 获取当前节点div
+                                let modal_bg =document.getElementById('modal_bg');
+                                modal_bg.style.display = 'block';
+                                document.getElementById("modal_content").innerHTML = `确定要删除该单词么`;
+                                document.getElementById("modal_close_button").addEventListener("click",function () {
+                                    modal_bg.style.display = 'none';
+                                })
+                                document.getElementById("modal_cancel_button").addEventListener("click",function () {
+                                    modal_bg.style.display = 'none';
+                                })
+                                document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                                    /*
+                                    * 发送ajax请求
+                                    *
+                                    * */
+                                    setTimeout(function () {
+                                        if(true){ // 如果删除成功
+                                            current_button_div.style.display = 'none';// 隐藏页面上的
+                                        }
+                                    },5000);// 这里设置5s之后隐藏current_button;
+
+                                })
                                 /*if(true){
                                     alert("删除成功");
                                 }*/
@@ -137,7 +159,7 @@ $(function () {
                                 //这里是否需要创建一个提示窗口，判断是否删除成功
                                 // alert(this.parentNode.innerText);
                                  // commit_delete_word();
-                                let delete_result=function commit_delete_word(url,keyword){
+                                //let delete_result=function commit_delete_word(url,keyword){
                                     //这里需要做一个ajax请求
                                     //需要通过url传入相应的参数，如：删除的词，和该文档路径+文档名
                                     /*$.ajax({
@@ -158,16 +180,12 @@ $(function () {
 
                                     // return  delete_result
 
-                                }
+                               // }
 
                                 // true的话，说明是个alert框
-                                 create_modal(true,"删除成功！",function () {
-                                    this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                                })
-                                // 这里需要将上传结果，返回给后端
-
-                                //如果上传修改成功，网页上也需要做相应的改变
-                                // 如何判断ajax返回的结果
+                                // create_modal(true,"删除成功！",function () {
+                                 //   this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
+                                // })
 
                             })
                         }
@@ -261,10 +279,10 @@ $(function () {
                      let selected_word = getWord();
                      if(selected_word==""){ //
                          // 添加一个提示窗口
-                         // alert("您没有选中需要添加的词");
-                         create_modal(true,"您没有选中需要添加的词！",function () {
+                          alert("您没有选中需要添加的词");
+                         /*create_modal(true,"您没有选中需要添加的词！",function () {
                              this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                         })
+                         })*/
                          return;
                      }
                      // 这里也可以对词的长度做一个限制，以防选中的文字过多
@@ -272,19 +290,16 @@ $(function () {
                          // 返回一个请求结果，是否添加成功
                      }
                      alert(selected_word);
-                     create_modal(false,`确定将关键词：<h3>${selected_word}</h3>添加到词库么`,function () {
+                     /*create_modal(false,`确定将关键词：<h3>${selected_word}</h3>添加到词库么`,function () {
                          add_commit();
                          // 想办法在 create_modal写一个返回结果
                          this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                     })
+                     })*/
                  }
              }
 
              // 添加一个提示窗口
-             // alert("请在文档当中选择需要添加的词");
-            create_modal(true,"请在文档当中选择需要添加的词",function () {
-                this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-            })
+             alert("请在文档当中选择需要添加的词");
 
         })
 
