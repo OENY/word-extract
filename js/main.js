@@ -78,6 +78,7 @@ $(function () {
             doc_names[i].addEventListener("click",function (event) {
                 // alert(event.currentTarget.innerText); // 获取当前文件名
                 // 动态创建iframe,展示
+                let doc_name = event.currentTarget.innerText;
                 let iframe = document.createElement("iframe");
                 iframe.style.width = "100%";
                 iframe.setAttribute("id","doc_iframe");
@@ -143,6 +144,7 @@ $(function () {
                                     * 发送ajax请求,别忘了async设为false
                                     *
                                     * */
+                                     //alert(doc_name) ;是可以获取文件名的
                                     setTimeout(function () {
                                         if(true){ // 如果删除成功
                                             current_button_div.style.display = 'none';// 隐藏页面上的button
