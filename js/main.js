@@ -140,21 +140,22 @@ $(function () {
                                 })
                                 document.getElementById("modal_confirm_button").addEventListener("click",function () {
                                     /*
-                                    * 发送ajax请求
+                                    * 发送ajax请求,别忘了async设为false
                                     *
                                     * */
                                     setTimeout(function () {
                                         if(true){ // 如果删除成功
-                                            current_button_div.style.display = 'none';// 隐藏页面上的
+                                            current_button_div.style.display = 'none';// 隐藏页面上的button
+                                            modal_bg.style.display = "none"; // 关闭该模态框
                                         }
-                                    },5000);// 这里设置5s之后隐藏current_button;
+                                    },1000);// 这里设置5s之后隐藏current_button;
 
                                 })
                                 /*if(true){
                                     alert("删除成功");
                                 }*/
                                 // 应该时创建的弹窗有影响，否则不会不可以的
-                                this.parentNode.style.display = "none";
+                               // this.parentNode.style.display = "none";
 
                                 //这里是否需要创建一个提示窗口，判断是否删除成功
                                 // alert(this.parentNode.innerText);
@@ -279,27 +280,64 @@ $(function () {
                      let selected_word = getWord();
                      if(selected_word==""){ //
                          // 添加一个提示窗口
-                          alert("您没有选中需要添加的词");
-                         /*create_modal(true,"您没有选中需要添加的词！",function () {
-                             this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                         })*/
+                         // alert("您没有选中需要添加的词")
+                         let modal_bg =document.getElementById('modal_bg');
+                         modal_bg.style.display = 'block';
+                         // 添加内容时，最好先把里面的内容清空
+                         document.getElementById("modal_content").innerHTML = `您没有选中需要添加的词`;
+                         document.getElementById("modal_close_button").addEventListener("click",function () {
+                             modal_bg.style.display = 'none';
+                         })
+                         document.getElementById("modal_cancel_button").style.display ='none';
+                         document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                             modal_bg.style.display = 'none';
+
+                         })
                          return;
+                     }else{
+                         //alert(selected_word);
+                         let modal_bg =document.getElementById('modal_bg');
+                         modal_bg.style.display = 'block';
+                         // 添加内容时，最好先把里面的内容清空
+                         document.getElementById("modal_content").innerHTML = `你确定要删除关键词-${selected_word}-么？`;
+                         document.getElementById("modal_close_button").addEventListener("click",function () {
+                             modal_bg.style.display = 'none';
+                         })
+                         document.getElementById("modal_cancel_button").addEventListener("click",function () {
+                             modal_bg.style.display ='none';
+                         })
+                         document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                             /*
+                             * 发送ajax请求，返回请求结果，尝试使用priomise来写
+                             * */
+                             //如果添加成功
+                             // 1.关闭当前弹窗
+                             // 2.刷新 页面右侧页面ajax请求，重新展示全部的关键词
+                             modal_bg.style.display = 'none';
+
+                             //如果发送成功
+
+                         })
+
                      }
-                     // 这里也可以对词的长度做一个限制，以防选中的文字过多
-                     function add_commit(){ // 通过ajax将该关键词，添加到后台词库
-                         // 返回一个请求结果，是否添加成功
-                     }
-                     alert(selected_word);
-                     /*create_modal(false,`确定将关键词：<h3>${selected_word}</h3>添加到词库么`,function () {
-                         add_commit();
-                         // 想办法在 create_modal写一个返回结果
-                         this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                     })*/
+
+
                  }
              }
 
              // 添加一个提示窗口
-             alert("请在文档当中选择需要添加的词");
+             //alert("请在文档当中选择需要添加的词");
+            let modal_bg =document.getElementById('modal_bg');
+            modal_bg.style.display = 'block';
+            document.getElementById("modal_content").innerHTML = `请在文档中选择需要添加的词`;
+            document.getElementById("modal_close_button").addEventListener("click",function () {
+                modal_bg.style.display = 'none';
+            })
+            document.getElementById("modal_cancel_button").style.display ='none';
+            document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                modal_bg.style.display = 'none';
+
+            })
 
         })
 
