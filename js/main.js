@@ -101,6 +101,8 @@ $(function () {
                         document.getElementsByClassName("key_words_count")[0].innerHTML =
                         `<span>关键词汇总</span>&nbsp;&nbsp;&nbsp;<span>数量：${key_word_data[doc].keyword.length}</span>`;
                         let detail_keywords = document.getElementById("detail_keywords_content");
+                        // 首先将detail_keywords清零;
+                        detail_keywords.innerHTML="";
                         for(let i = 0;i<key_word_data[doc].keyword.length;i++){
                             // console.log(key_word_data[doc].keyword);
                             let keyWord = key_word_data[doc].keyword[i].key;
