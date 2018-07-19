@@ -9591,7 +9591,8 @@ var TextLayerBuilder = function () {
         var isSelected = isSelectedPage && i === selectedMatchIdx;
         var highlightSuffix = isSelected ? ' selected' : '';
         if (this.findController) {
-          this.findController.updateMatchPosition(pageIdx, i, textDivs, begin.divIdx);
+            // 注释掉，不让他滚动到第一个匹配的位置
+         // this.findController.updateMatchPosition(pageIdx, i, textDivs, begin.divIdx);
         }
         if (!prevEnd || begin.divIdx !== prevEnd.divIdx) {
           if (prevEnd !== null) {
