@@ -48,8 +48,7 @@ See https://github.com/adobe-type-tools/cmap-resources
       }
       // 获取pdf文档路径
       var this_URL = getQueryStringName("pdf_url");
-      var contentOfLocation = getQueryStringName("locationContent");
-
+      var words_content = getQueryStringName("locationContent").split(',');
        // 定位的内容
        // 这里需要知道/获取需要定位的内容
        // 关键问题：如何获取contentOfLocation 和需要打开的URL

@@ -1129,7 +1129,7 @@ var PDFViewerApplication = {
       findBarConfig.eventBus = eventBus;
       _this2.findBar = new _pdf_find_bar.PDFFindBar(findBarConfig, _this2.l10n);
       // 这里添加一个定位功能
-        wordAndParagraphLocation(contentOfLocation); // contentOfLocation 是需要定位的内容
+        wordsHighLight(words_content); // contentOfLocation 是需要定位的内容
       _this2.pdfDocumentProperties = new _pdf_document_properties.PDFDocumentProperties(appConfig.documentProperties, _this2.overlayManager, _this2.l10n);
       _this2.pdfCursorTools = new _pdf_cursor_tools.PDFCursorTools({
         container: container,
@@ -2214,11 +2214,11 @@ function webViewerDocumentProperties() {
 }
 // 通过find功能来定位到指定位置
 // 单词或者文档的定位
-function wordAndParagraphLocation(contentOfLocation) {
+function wordsHighLight(content) { //@content @type:数组  因为要实现多个词的高亮
   let evt = {
     type:"",
-      query:contentOfLocation,
-      phraseSearch:true,
+      query:content,
+      phraseSearch:false,
       caseSensitive:false,
       highlightAll:true, // 如果是为了定位就改为false
   }
@@ -3243,7 +3243,7 @@ var PDFFindController = function () {
       }
     }
   }, {
-    key: 'calcFindPhraseMatch',
+    key: 'calcFindPhraseMatch',  //因为phraseMatch设为了false，所以不会执行这个
     value: function calcFindPhraseMatch(query, pageIndex, pageContent) {
       var matches = [];
       var queryLen = query.length;
@@ -3261,23 +3261,27 @@ var PDFFindController = function () {
     key: 'calcFindWordMatch',
     value: function calcFindWordMatch(query, pageIndex, pageContent) {
       var matchesWithLength = [];
-      var queryArray = query.match(/\S+/g);
-      for (var i = 0, len = queryArray.length; i < len; i++) {
-        var subquery = queryArray[i];
-        var subqueryLen = subquery.length;
-        var matchIdx = -subqueryLen;
-        while (true) {
-          matchIdx = pageContent.indexOf(subquery, matchIdx + subqueryLen);
-          if (matchIdx === -1) {
-            break;
+      let current_query=query;
+      for(let x=0;x<current_query.length;x++){
+          var queryArray = current_query[x].match(/\S+/g);
+          for (var i = 0, len = queryArray.length; i < len; i++) {
+              var subquery = queryArray[i];
+              var subqueryLen = subquery.length;
+              var matchIdx = -subqueryLen;
+              while (true) {
+                  matchIdx = pageContent.indexOf(subquery, matchIdx + subqueryLen);
+                  if (matchIdx === -1) {
+                      break;
+                  }
+                  matchesWithLength.push({
+                      match: matchIdx,
+                      matchLength: subqueryLen,
+                      skipped: false
+                  });
+              }
           }
-          matchesWithLength.push({
-            match: matchIdx,
-            matchLength: subqueryLen,
-            skipped: false
-          });
-        }
       }
+
       if (!this.pageMatchesLength) {
         this.pageMatchesLength = [];
       }
@@ -3289,21 +3293,25 @@ var PDFFindController = function () {
     key: 'calcFindMatch',
     value: function calcFindMatch(pageIndex) {
       var pageContent = this.normalize(this.pageContents[pageIndex]);
-      var query = this.normalize(this.state.query);
-      var caseSensitive = this.state.caseSensitive;
+      let query_words = this.state.query;
+        var caseSensitive = this.state.caseSensitive;
+        for(let i = 0;i<query_words.length;i++){
+          query_words[i] = this.normalize(query_words[i]);
+          if (!caseSensitive) {
+              pageContent = pageContent.toLowerCase();
+              query_words[i] = query_words[i].toLowerCase();
+          }
+      }
       var phraseSearch = this.state.phraseSearch;
-      var queryLen = query.length;
+      var queryLen = query_words.length;
       if (queryLen === 0) {
         return;
       }
-      if (!caseSensitive) {
-        pageContent = pageContent.toLowerCase();
-        query = query.toLowerCase();
-      }
+
       if (phraseSearch) {
-        this.calcFindPhraseMatch(query, pageIndex, pageContent);
+        this.calcFindPhraseMatch(query_words, pageIndex, pageContent);
       } else {
-        this.calcFindWordMatch(query, pageIndex, pageContent);
+        this.calcFindWordMatch(query_words, pageIndex, pageContent);
       }
       this.updatePage(pageIndex);
       if (this.resumePageIdx === pageIndex) {

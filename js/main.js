@@ -1,11 +1,15 @@
 $(function () {
     let URL = "http://localhost:8080/PerceptronLexicalAnalyzer1.0/process?method=ext&path=E%3a%5c%e7%a4%ba%e4%be%8b%e6%96%87%e6%a1%a3";
-    let key_word_datas = readInfoFromDoc(URL); // 读取关键词信息
+    let key_word_datas = readInfoFromDoc(URL); // 读取关键词信息，json数据
 
-    let url="http://localhost:8080/convertToFileStream_war_exploded/Convert"; // 文档地址,此地址是一个servlet,返回的是文件流形式的pdf
-    let content="李毅"; // 定位的段落
+    let pdf_url="http://localhost:8080/convertToFileStream_war_exploded/Convert"; // 文档地址,此地址是一个servlet,返回的是文件流形式的pdf
+
+    //而这个content来自 key_word_datas;
+    let content=['手机','李毅','电脑','张昌','犯罪嫌疑人','公安','拘留',
+    '没有','机关','笔录','支付宝','支付','叶涛','电话','雄楚市','侦查'
+    ,'情况','单位','苹果','号码']; // 高亮的词
     // 创建文档列表
-    createDocList(key_word_datas,url,content);
+    createDocList(key_word_datas,pdf_url,content);
 
     addKeyWord();
 
@@ -394,124 +398,6 @@ $(function () {
     *          this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
     *
     * */
-    function create_modal(alert_or_confirm,modal_contents,confirm_trigger_function) {
-        let modal_bg = document.createElement("div");
-        let modal_container = document.createElement("div");
-
-        let modal_title = document.createElement("div");
-        let modal_content = document.createElement("div");
-        let modal_footer = document.createElement("div");
-        //设置id
-        modal_bg.setAttribute("id","modal_bg");
-        modal_container.setAttribute("id","modal_container");
-        modal_title.setAttribute("id","modal_title");
-        modal_content.setAttribute("id","modal_content");
-        modal_footer.setAttribute("id","modal_footer");
-        //设置样式
-        modal_bg.style.cssText="z-index:5;" +
-            "display:block;" +
-            "background-color: rgba(0,0,0,0.4);" +
-            "position:fixed;" +
-            "top:0;" +
-            "bottom:0;" +
-            "right:0;" +
-            "left:0;";
-        modal_container.style.cssText="background-color:white;" +
-            "width:500px;" +
-            "height:300px;" +
-            "margin:10% auto;";
-        modal_title.style.cssText="color:white;" +
-            "background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);" +
-            "width:100%;" +
-            "height:50px;"+
-            "line-height:50px;";
-        modal_content.style.cssText="color:black;" +
-            "text-align:center;" +
-            "width:100%;" +
-            "height:190px;" +
-            "border-bottom:2px solid grey";
-        modal_footer.style.cssText="padding:14px 15px 15px;" +
-            "color:white;" +
-            "width:100%;" +
-            "height:60px;";
-
-
-        modal_container.appendChild(modal_title);
-        modal_container.appendChild(modal_content);
-        modal_container.appendChild(modal_footer)
-        modal_bg.appendChild(modal_container);
-        //将整个模态框添加到body中
-        document.body.appendChild(modal_bg);
-
-        //给模态框添加相应的内容
-        // modal_title.innerHTML="This is a modal title";
-        modal_content.innerHTML = modal_contents;
-        // modal_footer.innerHTML = "This is a modal footer";
-
-        // 制作关闭按钮
-        let close_button = document.createElement("span");
-        close_button.innerHTML = "&times;";
-        close_button.setAttribute("id","modal_close_button")
-        close_button.style.cssText=" margin-right:8px;" +
-            "line-height:50px;" +
-            "color: white;" +
-            "float: right;" +
-            "font-size: 28px;" +
-            "font-weight: bold;";
-        // 这个close_button的效果切换不使用js
-        // 改成使用 hover
-        /*close_button.onmouseover=function(event){
-            close_button.style.color = "black";
-            event =event||window.event;
-            event.stopPropagation();
-        }*/
-        // 这里的document函数对其他部分产生了影响，我暂时先取消
-        // 以后考虑使用 hover，比较方便；写在css里即可
-        /*document.onmouseover = function(){
-            document.getElementById("modal_close_button").style.color = "#aaa";
-        }*/
-        close_button.addEventListener("click",function () {
-            modal_bg.style.display = "none"
-        })
-        modal_title.appendChild(close_button);
-
-        //制作确定按钮和取消按钮
-        let confirm_button = document.createElement("div");
-        let cancel_button  = document.createElement("div");
-        confirm_button.style.cssText="border-radius:5px;" +
-            "color:white;" +
-            "text-align:center;" +
-            "line-height:20px;" +
-            "font-size:17px;" +
-            "float:right;" +
-            "background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);" +
-            "padding:5px;" +
-            "margin-right:30px;";
-        cancel_button.style.cssText="border-radius:5px;" +
-            "color:white;" +
-            "text-align:center;" +
-            "line-height:20px;" +
-            "font-size:17px;" +
-            "float:right;" +
-            "background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);" +
-            "padding:5px;" +
-            "margin-right:30px;";
-        confirm_button.innerHTML = "确定";
-        cancel_button.innerHTML = "取消";
-        if(alert_or_confirm){
-            modal_footer.appendChild(confirm_button);
-        }else {
-            modal_footer.appendChild(confirm_button);
-            modal_footer.appendChild(cancel_button);
-        }
-
-        //添加相应的事件
-        cancel_button.addEventListener("click",function () {
-            modal_bg.style.display = "none"
-        });
-        confirm_button.addEventListener("click",confirm_trigger_function);
-
-    }
 
 });
 
