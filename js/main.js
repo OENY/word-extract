@@ -1,17 +1,15 @@
 $(function () {
-    let URL = "http://localhost:8080/PerceptronLexicalAnalyzer1.0/process?method=ext&path=E%3a%5c%e7%a4%ba%e4%be%8b%e6%96%87%e6%a1%a3";
+    let URL = "http://localhost:8080/extraction/DB?method=kwd";
     let key_word_datas = readInfoFromDoc(URL); // 读取关键词信息，json数据
-
-    let pdf_url="http://localhost:8080/convertToFileStream_war_exploded/Convert"; // 文档地址,此地址是一个servlet,返回的是文件流形式的pdf
-
+     // 远程路径
+    // let pdf_url="http://localhost:8080/convertToFileStream_war_exploded/Convert"; // 文档地址,此地址是一个servlet,返回的是文件流形式的pdf
+    // 本地路径
+    //let pdf_url="http://localhost:8080/ConvetLocal";
     //而这个content来自 key_word_datas;
-    let content=['手机','李毅','电脑','张昌','犯罪嫌疑人','公安','拘留',
-    '没有','机关','笔录','支付宝','支付','叶涛','电话','雄楚市','侦查'
-    ,'情况','单位','苹果','号码']; // 高亮的词
     // 创建文档列表
-    createDocList(key_word_datas,pdf_url,content);
+    createDocList(key_word_datas);
 
-    addKeyWord();
+
 
     //添加返回按钮
     let back_home = document.getElementById("backHome");
@@ -48,8 +46,8 @@ $(function () {
     *
     *
     * */
-    function createDocList(key_word_datas,url,content) {
-        let key_word_data = key_word_datas;
+    function createDocList(key_word_datas) {
+        let key_word_data = key_word_datas.res;
         let grid_container = document.getElementById("grid_container");
         let table = document.createElement("table");
         let thead = document.createElement("thead");
@@ -57,190 +55,227 @@ $(function () {
         thead.innerHTML=`<th scope="col" title="President Number">#</th><th scope="col">文档列表</th>`;
         let count=1;
         for(doc in key_word_data){
-            count++;
+
             let tr = document.createElement("tr");
             let keywords="";
-            for(let i = 0 ;i<key_word_data[doc].keyword.length;i++){
-                if(i==key_word_data[doc].keyword.length-1){
-                    keywords+=key_word_data[doc].keyword[i].key;
+            for(let i = 0 ;i<key_word_data[doc].kwd.length;i++){
+                if(i<20){
+                    if(i==key_word_data[doc].kwd.length-1){
+                        keywords+=key_word_data[doc].kwd[i];
+                    }else {
+                        keywords+=key_word_data[doc].kwd[i]+"、";
+                    }
                 }else {
-                    keywords+=key_word_data[doc].keyword[i].key+"、";
+                    break;
                 }
-
             }
             tr.innerHTML = `<td><span style="font-weight: bold">${count}</span></td><td><span  class="doc_name"  style="font-weight: bold;">${doc}</span><br><br><span style="font-weight: bold">关键词：</span>${keywords}、</td>`;
             tbody.appendChild(tr);
+            count++;
 
         }
         table.appendChild(thead);
         table.appendChild(tbody);
         grid_container.appendChild(table);
 
-
+        //给每个文档添加点击事件，低级后显示文档
         let doc_names = document.getElementsByClassName("doc_name");
         for(let i=0;i<doc_names.length;i++){
             doc_names[i].addEventListener("click",function (event) {
-                // alert(event.currentTarget.innerText); // 获取当前文件名
-                // 动态创建iframe,展示
-                let doc_name = event.currentTarget.innerText;
-                let iframe = document.createElement("iframe");
-                iframe.style.width = "100%";
-                iframe.setAttribute("id","doc_iframe");
-                iframe.style.height = "100%";
-                iframe.src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url="+url+"&locationContent="+content;
-                document.getElementById("pdfDoc_container").appendChild(iframe);
-
-                document.getElementById("grid_container").style.display = "none";
-                document.getElementById("pdf_view_container").style.display = "block";
-
-
-                // 展示详细的key words
-                for(doc in key_word_data){
-                    if(event.currentTarget.innerText==doc){
-                        // title for keywords
-                        document.getElementsByClassName("key_words_count")[0].innerHTML =
-                        `<span>关键词汇总</span>&nbsp;&nbsp;&nbsp;<span>数量：${key_word_data[doc].keyword.length}</span>`;
-                        let detail_keywords = document.getElementById("detail_keywords_content");
-                        // 首先将detail_keywords清零;
-                        detail_keywords.innerHTML="";
-                        for(let i = 0;i<key_word_data[doc].keyword.length;i++){
-                            // console.log(key_word_data[doc].keyword);
-                            let keyWord = key_word_data[doc].keyword[i].key;
-                            let keyWord_button = document.createElement("div");
-                            keyWord_button.classList.add("keyWord_button");// 添加类名
-                            keyWord_button.innerText = keyWord;
-                            detail_keywords.appendChild(keyWord_button);
-                            // 给每个按钮添加close按钮
-                            let close_button = document.createElement("span");
-                            close_button.style.display = "none";
-                            close_button.classList.add("close_keyWord_button");
-                            close_button.classList.add("fa");
-                            close_button.classList.add("fa-close");
-                            keyWord_button.appendChild(close_button);
-
-                            keyWord_button.onmouseover=function (event) { //该循环添加事件没有问题
-                                // console.log(this.children[0]);
-                                this.children[0].style.display="block";
-                                event = event || window.event;
-                                event.stopPropagation();
-                            }
-                            document.onmouseover =function () {
-                                let close_buttons =document.getElementsByClassName("close_keyWord_button");
-                                for(let i =0;i<close_buttons.length;i++){
-                                    close_buttons[i].style.display = "none";
-                                }
-                            }
-                        }
-
-                        let close_buttons =document.getElementsByClassName("close_keyWord_button");
-                        for(let i = 0;i<close_buttons.length;i++){
-                            close_buttons[i].addEventListener("click",function () {
-                                let current_button_div = this.parentNode;// 获取当前节点div
-                                let modal_bg =document.getElementById('modal_bg');
-                                modal_bg.style.display = 'block';
-                                document.getElementById("modal_content").innerHTML = `确定要删除该单词么`;
-                                document.getElementById("modal_close_button").addEventListener("click",function () {
-                                    modal_bg.style.display = 'none';
-                                })
-                                document.getElementById("modal_cancel_button").addEventListener("click",function () {
-                                    modal_bg.style.display = 'none';
-                                })
-                                document.getElementById("modal_confirm_button").addEventListener("click",function () {
-                                    /*
-                                    * 发送ajax请求,别忘了async设为false
-                                    *
-                                    * */
-                                     //alert(doc_name) ;是可以获取文件名的
-                                    setTimeout(function () {
-                                        if(true){ // 如果删除成功
-                                            current_button_div.style.display = 'none';// 隐藏页面上的button
-                                            modal_bg.style.display = "none"; // 关闭该模态框
-                                        }
-                                    },1000);// 这里设置5s之后隐藏current_button;
-
-                                })
-                                /*if(true){
-                                    alert("删除成功");
-                                }*/
-                                // 应该时创建的弹窗有影响，否则不会不可以的
-                               // this.parentNode.style.display = "none";
-
-                                //这里是否需要创建一个提示窗口，判断是否删除成功
-                                // alert(this.parentNode.innerText);
-                                 // commit_delete_word();
-                                //let delete_result=function commit_delete_word(url,keyword){
-                                    //这里需要做一个ajax请求
-                                    //需要通过url传入相应的参数，如：删除的词，和该文档路径+文档名
-                                    /*$.ajax({
-                                        url:URL,
-                                        type:'post',
-                                        dataType:'json',
-                                        success:function (response) {
-                                            key_word_data = response
-                                            // console.log(response);
-                                        },
-                                        error:function (error) {
-                                            // alert("获取数据失败")
-                                        },
-                                        async:false,
-                                        timeout:100000,
-                                    });*/
-
-
-                                    // return  delete_result
-
-                               // }
-
-                                // true的话，说明是个alert框
-                                // create_modal(true,"删除成功！",function () {
-                                 //   this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
-                                // })
-
-                            })
-                        }
-                    }
-                }
-
-                //相关文档推荐
-                // let relatedURL="";
-                // let relatedDoc = readRealtedDoc(relatedURL);
-                let relatedDoc;
-                // 现在没有接口,先使用虚拟数据
-                relatedDoc = [
-                    "MA5800-X17 硬件安装指导 V1.0",
-                    "接入网建设模式和场景 V1.0",
-                    "超宽铜线解决方案-铜线接入架构与技术 V1.0",
-                    "MSO接入解决方案 V1.0",
-                    "什么是接入网 V1.0",
-                    "FTTBC组网场景(EPON组网,无HGW,xDSL接入) 配置案例",
-                    "SmartAX MA5800 V100R018C10 Virus Scan Report",
-                    "(多媒体)VAN特性介绍 V1.0"
-                ];
-                for(let i = 0;i<relatedDoc.length;i++){
-                    let div = document.createElement("div");
-                    div.style.margin = "8px";
-                    div.style.paddingLeft = "8px";
-                    div.style.cursor = "pointer";
-                    let pdf_icon = document.createElement("i");
-                    pdf_icon.classList.add("fa");
-                    pdf_icon.classList.add("fa-file-pdf-o");
-                    pdf_icon.setAttribute("aria-hidden","true");
-                    pdf_icon.style.color = "red";
-                    // 文档名称
-                    let span = document.createElement("span");
-                    span.innerHTML = relatedDoc[i];
-                    span.style.paddingLeft="8px";
-                    div.appendChild(pdf_icon);
-                    div.appendChild(span);
-                    document.getElementById("related_document_list").appendChild(div);
-                    div.addEventListener("click",function () {
-                        alert("将展示此pdf");
-                    })
-                }
+                showPDF(event.currentTarget.innerText,key_word_data);
             })
         }
     }
 
+    //展示指定文档名的文档
+    function showPDF(docName,key_word_data) {
+        // alert(event.currentTarget.innerText); // 获取当前文件名
+        // 动态创建iframe,展示
+
+        let doc_name = docName;
+        let iframe = document.createElement("iframe");
+        iframe.style.width = "100%";
+        iframe.setAttribute("id","doc_iframe");
+        iframe.style.height = "100%";
+        let trim_doc_name = doc_name.slice(0,doc_name.indexOf(".")); // 删除后缀名
+        let pdf_url="http://localhost:8080/convertToFileStream_war_exploded/ConvertLocal?fileName="+trim_doc_name+".pdf";
+        let content=[];
+        for(x in key_word_data){
+            if(x==doc_name){
+                content=key_word_data[x].kwd;//获取所有关键词
+            }
+        }
+        iframe.src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url="+encodeURI(pdf_url)+"&locationContent="+content;
+        document.getElementById("pdfDoc_container").innerHTML="";
+        document.getElementById("pdfDoc_container").appendChild(iframe);
+
+        document.getElementById("grid_container").style.display = "none";
+        document.getElementById("pdf_view_container").style.display = "block";
+
+
+        // 展示详细的key words
+        for(doc in key_word_data){
+            if(docName==doc){
+                // title for keywords
+                document.getElementsByClassName("key_words_count")[0].innerHTML =
+                    `<span>关键词汇总</span>&nbsp;&nbsp;&nbsp;<span>数量：${key_word_data[doc].kwd.length}</span>`;
+                let detail_keywords = document.getElementById("detail_keywords_content");
+                // 首先将detail_keywords清零;
+                detail_keywords.innerHTML="";
+                for(let i = 0;i<key_word_data[doc].kwd.length;i++){
+                    // console.log(key_word_data[doc].kwd);
+                    let keyWord = key_word_data[doc].kwd[i]; // 获取单个的关键词
+                    let keyWord_button = document.createElement("div");
+                    keyWord_button.classList.add("keyWord_button");// 添加类名
+                    keyWord_button.innerText = keyWord;
+                    detail_keywords.appendChild(keyWord_button);
+                    // 给每个按钮添加close按钮
+                    let close_button = document.createElement("span");
+                    close_button.style.display = "none";
+                    close_button.classList.add("close_keyWord_button");
+                    close_button.classList.add("fa");
+                    close_button.classList.add("fa-close");
+                    keyWord_button.appendChild(close_button);
+
+                    keyWord_button.onmouseover=function (event) { //该循环添加事件没有问题
+                        // console.log(this.children[0]);
+                        this.children[0].style.display="block";
+                        event = event || window.event;
+                        event.stopPropagation();
+                    }
+                    document.onmouseover =function () {
+                        let close_buttons =document.getElementsByClassName("close_keyWord_button");
+                        for(let i =0;i<close_buttons.length;i++){
+                            close_buttons[i].style.display = "none";
+                        }
+                    }
+                }
+                //删除关键词
+                let close_buttons =document.getElementsByClassName("close_keyWord_button");
+                for(let i = 0;i<close_buttons.length;i++){
+                    close_buttons[i].addEventListener("click",function () {
+                        let current_button_div = this.parentNode;// 获取当前节点div
+                        let delete_word = current_button_div.innerText;
+                        $.ajax({
+                            url:"http://localhost:8080/extraction/DB?method=del&name="+doc_name+"&kwd="+delete_word,
+                            type:'post',
+                            dataType:'json',
+                            success:function (response) {
+                                alert(response.msg);
+                                current_button_div.style.display = 'none';// 隐藏页面上的button
+                                modal_bg.style.display = "none"; // 关闭该模态框
+                                let fresh_data=readInfoFromDoc(URL).res;
+                                showPDF(docName,fresh_data);
+
+                            },
+                            error:function (error) {
+                                // alert("获取数据失败")
+                            },
+                            async:true,
+                            timeout:100000,
+                        });
+                        // 以前的弹窗，主要是确定按钮被绑定了，解决方法，动态创建确定按钮，就可以了
+                        /*let modal_bg =document.getElementById('modal_bg');
+                        modal_bg.style.display = 'block';
+                        document.getElementById("modal_content").innerHTML = `确定要删除该单词么`;
+                        document.getElementById("modal_close_button").addEventListener("click",function () {
+                            modal_bg.style.display = 'none';
+                        })
+                        document.getElementById("modal_cancel_button").addEventListener("click",function () {
+                            modal_bg.style.display = 'none';
+                        })
+                        document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                            /!*
+                            * 发送ajax请求,别忘了async设为false
+                            *
+                            * *!/
+
+                             //alert(doc_name) ;是可以获取文件名的
+
+
+                        })*/
+                        /*if(true){
+                            alert("删除成功");
+                        }*/
+                        // 应该时创建的弹窗有影响，否则不会不可以的
+                        // this.parentNode.style.display = "none";
+
+                        //这里是否需要创建一个提示窗口，判断是否删除成功
+                        // alert(this.parentNode.innerText);
+                        // commit_delete_word();
+                        //let delete_result=function commit_delete_word(url,keyword){
+                        //这里需要做一个ajax请求
+                        //需要通过url传入相应的参数，如：删除的词，和该文档路径+文档名
+                        /*$.ajax({
+                            url:URL,
+                            type:'post',
+                            dataType:'json',
+                            success:function (response) {
+                                key_word_data = response
+                                // console.log(response);
+                            },
+                            error:function (error) {
+                                // alert("获取数据失败")
+                            },
+                            async:false,
+                            timeout:100000,
+                        });*/
+
+
+                        // return  delete_result
+
+                        // }
+
+                        // true的话，说明是个alert框
+                        // create_modal(true,"删除成功！",function () {
+                        //   this.parentNode.parentNode.parentNode.style.display = "none"; //这里时为了获得 modal_bc;
+                        // })
+
+                    })
+                }
+            }
+        }
+        // 在文档上选择词来进行添加；
+        addKeyWord(doc_name);
+
+        //相关文档推荐
+        let relatedURL="http://localhost:8080/extraction/DB?method=sim&name="+doc_name;
+        let relatedDoc = readRealtedDoc(relatedURL).res[doc_name];//相关文档是一个对象
+        // 先清空推荐列表
+        document.getElementById("related_document_list").innerHTML="";
+        for(RD in relatedDoc){
+            let div = document.createElement("div");
+            div.style.boxSizing = "border-box";
+            div.style.paddingLeft = "8px";
+            div.style.width = "100%";
+            div.style.cursor = "pointer";
+            let pdf_icon = document.createElement("i");
+            pdf_icon.classList.add("fa");
+            pdf_icon.classList.add("fa-file-pdf-o");
+            pdf_icon.setAttribute("aria-hidden","true");
+            pdf_icon.style.color = "red";
+            // 文档名称
+            let RD_div = document.createElement("div");
+            RD_div.innerHTML = RD;
+            RD_div.classList.add("RD_div");
+            // div.appendChild(pdf_icon);
+            div.appendChild(RD_div);
+            // 文档相似度
+            let degOfRelated_div = document.createElement("div");
+            degOfRelated_div.classList.add("degOfRelated_div");
+
+            degOfRelated_div.innerHTML="相关度:"+Math.round(relatedDoc[RD]*100);
+            div.appendChild(degOfRelated_div);
+
+            document.getElementById("related_document_list").appendChild(div);
+            div.addEventListener("click",function (event) {
+                //alert("将展示此pdf");
+                //将数据清空
+                document.getElementById("pdfDoc_container").innerHTML="";//清空iframe
+                showPDF(event.currentTarget.childNodes[0].innerText,key_word_data);
+            })
+        }
+    }
     // 获取文档关键词数据
     function readInfoFromDoc(URL) {
         let key_word_data=null;
@@ -266,7 +301,7 @@ $(function () {
     }
 
     //添加关键词到词库
-    function addKeyWord() {
+    function addKeyWord(doc_name,doc_path) {
         let add_trigger_button = document.querySelector(".fa-plus");
         add_trigger_button.addEventListener("click",function () {
 
@@ -307,7 +342,7 @@ $(function () {
                          let modal_bg =document.getElementById('modal_bg');
                          modal_bg.style.display = 'block';
                          // 添加内容时，最好先把里面的内容清空
-                         document.getElementById("modal_content").innerHTML = `你确定要删除关键词-${selected_word}-么？`;
+                         document.getElementById("modal_content").innerHTML = `你确定要添加关键词-${selected_word}-么？`;
                          document.getElementById("modal_close_button").addEventListener("click",function () {
                              modal_bg.style.display = 'none';
                          })
@@ -318,10 +353,29 @@ $(function () {
                              /*
                              * 发送ajax请求，返回请求结果，尝试使用priomise来写
                              * */
+
+                             $.ajax({
+                                 url:"http://localhost:8080/extraction/DB?method=add&name="+doc_name+"&kwd="+selected_word+"&path=21.docx",
+                                 type:'post',
+                                 dataType:'json',
+                                 success:function (response) {
+                                     alert(response.msg);
+                                     modal_bg.style.display = 'none'; // 添加成功关闭弹窗
+                                     let fresh_data=readInfoFromDoc(URL).res;
+                                     showPDF(doc_name,fresh_data);
+
+
+                                 },
+                                 error:function (error) {
+                                     alert("添加数据又失败")
+                                 },
+                                 async:true,
+                                 timeout:100000,
+                             });
                              //如果添加成功
                              // 1.关闭当前弹窗
                              // 2.刷新 页面右侧页面ajax请求，重新展示全部的关键词
-                             modal_bg.style.display = 'none';
+
 
                              //如果发送成功
 
