@@ -48,7 +48,8 @@ See https://github.com/adobe-type-tools/cmap-resources
       }
       // 获取pdf文档路径
       var this_URL = getQueryStringName("pdf_url");
-      var words_content = getQueryStringName("locationContent").split(',');
+      var words_content = localStorage.keyWords.split(',');
+      //var words_content = getQueryStringName("locationContent").split(',');
        // 定位的内容
        // 这里需要知道/获取需要定位的内容
        // 关键问题：如何获取contentOfLocation 和需要打开的URL
@@ -59,7 +60,7 @@ See https://github.com/adobe-type-tools/cmap-resources
       $.ajax({ // 通过ajax请求获取转黄的文件流
           type:"get",
           crossDomain:true,
-          async:false, // false是不采用异步的方式
+          async:false, // false是不采用异步的方式,这里必须使用false
           mimeType:'text/plain;charset=x-user-defined',
           url:this_URL,
           success:function (data) {

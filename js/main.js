@@ -105,7 +105,11 @@ $(function () {
                 content=key_word_data[x].kwd;//获取所有关键词
             }
         }
-        iframe.src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url="+encodeURI(pdf_url)+"&locationContent="+content;
+        localStorage.removeItem("keyWords");
+        localStorage.keyWords=content;
+        iframe.src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url="+encodeURI(pdf_url);
+                //iframe.src="./pdfjs-1.9.426-dist/web/viewer.html?pdf_url="+encodeURI(pdf_url)+"&locationContent="+content;
+
         document.getElementById("pdfDoc_container").innerHTML="";
         document.getElementById("pdfDoc_container").appendChild(iframe);
 
@@ -266,7 +270,7 @@ $(function () {
 
             degOfRelated_div.innerHTML="相关度:"+Math.round(relatedDoc[RD]*100);
             div.appendChild(degOfRelated_div);
-
+            //需要根据相关度进行排序；
             document.getElementById("related_document_list").appendChild(div);
             div.addEventListener("click",function (event) {
                 //alert("将展示此pdf");
@@ -331,8 +335,12 @@ $(function () {
                          document.getElementById("modal_close_button").addEventListener("click",function () {
                              modal_bg.style.display = 'none';
                          })
-                         document.getElementById("modal_cancel_button").style.display ='none';
-                         document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                         document.getElementById("modal_footer").innerHTML="";
+                         let modal_confirm_button = document.createElement("div");
+                         modal_confirm_button.setAttribute("id","modal_confirm_button");
+                         modal_confirm_button.innerHTML="确定";
+                         document.getElementById("modal_footer").appendChild(modal_confirm_button);
+                         modal_confirm_button.addEventListener("click",function () {
                              modal_bg.style.display = 'none';
 
                          })
@@ -346,10 +354,19 @@ $(function () {
                          document.getElementById("modal_close_button").addEventListener("click",function () {
                              modal_bg.style.display = 'none';
                          })
-                         document.getElementById("modal_cancel_button").addEventListener("click",function () {
+                         document.getElementById("modal_footer").innerHTML="";
+                         let modal_cancel_button = document.createElement("div");
+                         modal_cancel_button.setAttribute("id","modal_cancel_button");
+                         modal_cancel_button.innerHTML="取消";
+                         document.getElementById("modal_footer").appendChild(modal_cancel_button);
+                         modal_cancel_button.addEventListener("click",function () {
                              modal_bg.style.display ='none';
                          })
-                         document.getElementById("modal_confirm_button").addEventListener("click",function () {
+                         let modal_confirm_button = document.createElement("div");
+                         modal_confirm_button.setAttribute("id","modal_confirm_button");
+                         modal_confirm_button.innerHTML="确定";
+                         document.getElementById("modal_footer").appendChild(modal_confirm_button);
+                         modal_confirm_button.addEventListener("click",function () {
                              /*
                              * 发送ajax请求，返回请求结果，尝试使用priomise来写
                              * */
@@ -395,8 +412,13 @@ $(function () {
             document.getElementById("modal_close_button").addEventListener("click",function () {
                 modal_bg.style.display = 'none';
             })
-            document.getElementById("modal_cancel_button").style.display ='none';
-            document.getElementById("modal_confirm_button").addEventListener("click",function () {
+            document.getElementById("modal_footer").innerHTML="";
+            let modal_confirm_button = document.createElement("div");
+            modal_confirm_button.setAttribute("id","modal_confirm_button");
+            modal_confirm_button.innerHTML="确定";
+
+            document.getElementById("modal_footer").appendChild(modal_confirm_button);
+            modal_confirm_button.addEventListener("click",function () {
                 modal_bg.style.display = 'none';
 
             })
