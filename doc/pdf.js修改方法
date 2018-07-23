@@ -1,0 +1,2 @@
+1.注释掉，不让他滚动到第一个匹配的位置（大约在9594行左右，viewer.js)左右
+ // this.findController.updateMatchPosition(pageIdx, i, textDivs, begin.divIdx);
